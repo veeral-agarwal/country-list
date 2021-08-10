@@ -1,15 +1,21 @@
-// https://restcountries.eu/rest/v2/all
-
 import Head from 'next/head'
-
+import { useRouter } from 'next/router'
 
 const defaultEndpoint = 'https://restcountries.eu/rest/v2/all'
 
 export async function getServerSideProps({query}) {
   const {id} = query
+  console.log(id)
   const res = await fetch(defaultEndpoint);
   const data = await res.json();
-  for(var i ; ; )
+  var i, data1;
+  for(i=0 ; i<data.length ;i++ ) {
+    if(data[i]["alpha3code"] === query) {
+      console.log(data[i]["alpha3code"])
+      data1 = data[i]
+      break;
+    }
+  }
   return {
     props: {
       data
@@ -17,7 +23,63 @@ export async function getServerSideProps({query}) {
   }
 }
 
+
+
 export default function Country({data}) {
+  console.log(data)
+
+  const router = useRouter()
+  console.log(router["query"]["id"])
+  var countr = {};
+  var neigh;
+  var id = router["query"]["id"];
+  var languages = []
+  var timezones = []
+  for(var i = 0; i<data.length ; i++) {
+    if(data[i].alpha3Code === id) {
+      countr = data[i]
+      
+      break
+    }
+  }
+  neigh = countr.borders
+  
+  var neighbours_flag = []
+  for(var i = 0; i<data.length ; i++) {
+    for(var j=0 ; j<neigh.length ; j++) {
+      if(neigh[j] === data[i].alpha3Code) {
+        neighbours_flag.push(data[i].flag)
+      }
+    }
+  }
+  for(var i =0; i<countr["languages"].length ; i++) {
+    languages.push(countr["languages"][i]["name"])
+  }
+  for(var i =0; i<countr["timezones"].length ; i++) {
+    timezones.push(countr["timezones"][i])
+  }
+
+  var language_string = ""
+  for(var i=0 ; i<languages.length-1 ; i++) {
+    language_string += languages[i]
+    language_string += ", "
+  }
+  if(languages.length >1) {
+    language_string += "and "
+  }
+  language_string += languages[languages.length-1]
+  
+
+  var timezones_string = ""
+  for(var i=0 ; i<timezones.length-1 ; i++) {
+    timezones_string += timezones[i]
+    timezones_string += ", "
+  }
+  if(timezones.length >1) {
+    timezones_string += "and "
+  }
+  timezones_string += timezones[timezones.length-1]
+  console.log(neighbours_flag)
 
   return (
     <div className="container">
@@ -27,10 +89,88 @@ export default function Country({data}) {
       </Head>
 
       <main>
-        <h1 className="title">
-         Countries
-        </h1>
-
+        <div>
+          <table>
+            <tr>
+              <td>
+                <h1>
+                  {countr.name}
+                </h1>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <img className="flagsize" width="500" height="300" src={countr.flag} alt={`${countr.name}`}></img> 
+              </td>
+              <td>
+                <table>
+                  <tr>
+                    <p>
+                      Native Name: {countr.nativeName}
+                    </p>
+                  </tr>
+                  <tr>
+                    <p>
+                      Capital: {countr.capital}
+                    </p>
+                  </tr>
+                  <tr>
+                    <p>
+                      Population: {countr.population} 
+                    </p>
+                  </tr>
+                  <tr>
+                    <p>
+                      Region: {countr.region}
+                    </p>
+                  </tr>
+                  <tr>
+                    <p>
+                      Sub-Region: {countr.subregion}
+                    </p>
+                  </tr>
+                  <tr>
+                    <p>
+                      Area: {countr.area} Km sq.
+                    </p>
+                  </tr>
+                  <tr>
+                    <p>
+                      Country code: +{countr.callingCodes}
+                    </p>
+                  </tr>
+                  <tr>
+                    <p>
+                      Languages: {language_string}
+                    </p>
+                  </tr>
+                  <tr>
+                    <p>
+                      Currencies: {countr.currencies[0]["name"]}
+                    </p>
+                  </tr>
+                  <tr>
+                    <p>
+                      Timezones: {timezones_string}
+                    </p>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr className="card">
+              <div>
+                <h1>neighbour countries</h1>
+                <ul className="grid">
+                  {neighbours_flag.map(flag => {
+                    return (
+                      <img className="flagsize" src={flag} width="500" height="200"></img>         
+                    )
+                  })}
+                </ul>
+              </div>
+            </tr>
+          </table>
+        </div>
       </main>
 
       <style jsx>{`
@@ -69,6 +209,21 @@ export default function Country({data}) {
           display: flex;
           justify-content: center;
           align-items: center;
+        }
+
+        .flagsize {
+          border: 1px solid #555;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-wrap: wrap;
+
+          max-width: 2000px;
+          margin-top: 3rem;
+
+          list-style:none;
+          margin-left: 0;
+          padding-left: 0;
         }
 
         a {
@@ -117,8 +272,9 @@ export default function Country({data}) {
           align-items: center;
           justify-content: center;
           flex-wrap: wrap;
+          grid-column-gap: 50px;
 
-          max-width: 800px;
+          max-width: 1000px;
           margin-top: 3rem;
 
           list-style:none;

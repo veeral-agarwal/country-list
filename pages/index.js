@@ -1,7 +1,8 @@
 // https://restcountries.eu/rest/v2/all
 
 import Head from 'next/head'
- 
+import Link from 'next/link'
+import {useState} from 'react'
 
 const defaultEndpoint = 'https://restcountries.eu/rest/v2/all'
 
@@ -17,11 +18,22 @@ export async function getServerSideProps() {
 
 export default function Home({data}) {
   
-  const results = data;
+  var results = data;
+  const defaultresults = data;
   
-  function handleOnSubmitSearch(e) {
-    e.preventDefault();
-  }
+
+  const [searchTerm, setSearchTerm] = useState()
+  var new_data = results
+  function handleChange(e) {
+    if(e.target.value === "") {
+      new_data = results
+    }
+    else {
+      new_data = results.filter(item => item.name.toLowerCase().includes(e.target.value.toLowerCase()))
+    }
+    console.log(new_data)
+    console.log(e.target.value)
+  };
 
   return (
     <div className="container">
@@ -35,26 +47,67 @@ export default function Home({data}) {
         Countries
         </h1>
 
-        {/* <p className="description">
-          Get started by editing <code>pages/index.js</code>
-        </p> */}
 
-        <form className="search" onSubmit={handleOnSubmitSearch}>
-          <input name="query" type="search"/>
-          <button>search</button>
+        <form className="search" >
+          <input onChange={handleChange} type="text"/>
+          {/* <input onChange={handleChange}​​​ type="text"/> */}
+          {/* <button>search</button> */}
         </form>
 
-        {console.log(results)}
+        {console.log(new_data)}
         <ul className="grid">
-          {results.map(result => {
-            const { alpha3code, name, flag} = result;
+          {new_data.map(result => {
+            const { alpha3code, name, flag, currencies} = result;
             
             return (
-              <li key={alpha3code} className="card">
-              <a href="https://nextjs.org/docs" >
-                <img className="flagsize" src={flag} alt={`${name}`}></img>
-                <h3>{name}</h3>
-              </a>
+              <li key={alpha3code} className="card1">
+                {/* <Link href="./country/${alpha3code}" > */}
+                <div>
+                  <div>
+                    <div>
+                      <table>
+                        <tr>
+                          <td>
+                            <table>
+                              <tr>
+                                <img className="flagsize" src={flag} alt={`${name}`}></img>          
+                              </tr>        
+                            </table>
+                          </td>
+                          <td>
+                            <table>
+                              <tr>
+                                <h3>{name}</h3>          
+                              </tr>
+                              <tr>
+                                <p>currency: {currencies[0]["name"]}</p>          
+                              </tr>
+                              <tr>
+                                <p>current date and time: </p>          
+                              </tr>
+                              <tr>
+                                <td className="card">
+                                  <Link href={`https://www.google.com/maps/place/${result.name}`}>
+                                    <a target="_blank">
+                                      <p>Show Map</p>
+                                    </a>
+                                  </Link>  
+                                </td>
+                                <td className="card">
+                                  <Link href={`/country/${result.alpha3Code}`}>
+                                    <a target="_blank">
+                                      <p>Detail</p>
+                                    </a>
+                                  </Link>
+                                </td>  
+                              </tr>        
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
             </li>
             )
 
@@ -172,7 +225,7 @@ export default function Home({data}) {
           justify-content: center;
           flex-wrap: wrap;
 
-          max-width: 300px;
+          max-width: 200px;
           margin-top: 3rem;
 
           list-style:none;
@@ -182,14 +235,26 @@ export default function Home({data}) {
 
         .card {
           margin: 1rem;
-          flex-basis: 45%;
+          flex-basis: 95%;
           padding: 1.5rem;
           text-align: left;
           color: inherit;
           text-decoration: none;
-          border: 1px solid #eaeaea;
+          border: 5px solid #eaeaea;
           border-radius: 10px;
-          transition: color 0.15s ease, border-color 0.15s ease;
+          transition: color 0.15s ease, border-color 0.35s ease;
+        }
+
+        .card1 {
+          margin: 1rem;
+          flex-basis: 95%;
+          padding: 1.5rem;
+          text-align: left;
+          color: inherit;
+          /* text-decoration: none; */
+          border: 1px solid #eaeaea;
+          border-radius: 20px;
+          /* transition: color 0.15s ease, border-color 0.15s ease; */
         }
 
         .card:hover,
