@@ -3,6 +3,8 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import {useState} from 'react'
+import { Button } from 'react-bootstrap';
+
 
 const defaultEndpoint = 'https://restcountries.eu/rest/v2/all'
 
@@ -16,20 +18,27 @@ export async function getServerSideProps() {
   }
 }
 
+function Time(x) {
+  let d = new Date();
+  let utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+  let nd = new Date(utc + (3600000 * x));
+  return nd.toLocaleString();
+}
+
 export default function Home({data}) {
   
   var results = data;
   const defaultresults = data;
   
 
-  const [searchTerm, setSearchTerm] = useState()
-  var new_data = results
+  const [new_data, setnew_data] = useState(results)
   function handleChange(e) {
     if(e.target.value === "") {
-      new_data = results
+      setnew_data(results)
     }
     else {
-      new_data = results.filter(item => item.name.toLowerCase().includes(e.target.value.toLowerCase()))
+      const a = results.filter(item => item.name.toLowerCase().includes(e.target.value.toLowerCase()))
+      setnew_data(a)
     }
     console.log(new_data)
     console.log(e.target.value)
@@ -49,7 +58,7 @@ export default function Home({data}) {
 
 
         <form className="search" >
-          <input onChange={handleChange} type="text"/>
+          <input className="search" onChange={handleChange} type="text"/>
           {/* <input onChange={handleChange}​​​ type="text"/> */}
           {/* <button>search</button> */}
         </form>
@@ -57,10 +66,10 @@ export default function Home({data}) {
         {console.log(new_data)}
         <ul className="grid">
           {new_data.map(result => {
-            const { alpha3code, name, flag, currencies} = result;
+            const { alpha3code, name, flag, currencies, timezones} = result;
             
             return (
-              <li key={alpha3code} className="card1">
+              <li key={alpha3code} style={{border: "2px solid lightgray"}} >
                 {/* <Link href="./country/${alpha3code}" > */}
                 <div>
                   <div>
@@ -83,20 +92,25 @@ export default function Home({data}) {
                                 <p>currency: {currencies[0]["name"]}</p>          
                               </tr>
                               <tr>
-                                <p>current date and time: </p>          
+                                <p>current date and time: {Time(timezones[0].slice(3).replace(":", "."))}</p>          
                               </tr>
                               <tr>
-                                <td className="card">
+                                <td >
                                   <Link href={`https://www.google.com/maps/place/${result.name}`}>
                                     <a target="_blank">
-                                      <p>Show Map</p>
+                                      <button className="buttons button2">
+                                        <h2>Show Map</h2>
+                                      </button>
+                                      
                                     </a>
                                   </Link>  
                                 </td>
-                                <td className="card">
+                                <td>
                                   <Link href={`/country/${result.alpha3Code}`}>
                                     <a target="_blank">
-                                      <p>Detail</p>
+                                      <button className="buttons button2">
+                                        <h2>Details</h2>
+                                      </button>
                                     </a>
                                   </Link>
                                 </td>  
@@ -127,6 +141,25 @@ export default function Home({data}) {
       </footer>
 
       <style jsx>{`
+
+        .buttons {
+          margin: 4px 2px;
+          background-color: white; Green
+          border: 5px solid #4CAF50; 
+          color: blue;
+          padding: 1px 30px;
+          text-align: center;
+          text-decoration: none;
+
+          font-size: 16px;
+        }
+
+        .button2 {
+          background-color: white; 
+          color: blue; 
+          border: 5px solid #008CBA;
+        }
+
         .container {
           min-height: 100vh;
           padding: 0 0.5rem;
@@ -180,6 +213,15 @@ export default function Home({data}) {
           text-decoration: underline;
         }
 
+        .show {
+          width:"100%";
+          height:"auto";
+          borderRadius:"0";
+          fontSize: "calc(60% + 0.5vw + 0.5vh)";
+          border: "2px solid";
+          marginBottom: "2%"
+        }
+
         .title {
           margin: 0;
           line-height: 1.15;
@@ -203,6 +245,13 @@ export default function Home({data}) {
           font-size: 1.1rem;
           font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
             DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
+        }
+
+        .search {
+          width: "100%";
+          padding: "2%";
+          border: "2px solid lightgray";
+          fontSize: "calc(70% + 0.6vw + 0.6vh)";
         }
 
         .grid {
@@ -234,6 +283,7 @@ export default function Home({data}) {
         }
 
         .card {
+          border: "2px solid lightgray"
           margin: 1rem;
           flex-basis: 95%;
           padding: 1.5rem;
