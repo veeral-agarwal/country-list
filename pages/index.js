@@ -157,7 +157,7 @@ export default function Home({data}) {
         .button2 {
           background-color: white; 
           color: blue; 
-          border: 5px solid #008CBA;
+          border: 5px solid ;
         }
 
         .container {
