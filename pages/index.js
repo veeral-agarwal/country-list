@@ -69,17 +69,17 @@ export default function Home({data}) {
             const { alpha3code, name, flag, currencies, timezones} = result;
             
             return (
-              <li key={alpha3code} style={{border: "2px solid lightgray"}} >
+              <li  key={alpha3code} style={{border: "2px solid lightgray"}} >
                 {/* <Link href="./country/${alpha3code}" > */}
                 <div>
                   <div>
                     <div>
-                      <table>
+                      <table cellspacing="20">
                         <tr>
                           <td>
                             <table>
-                              <tr>
-                                <img className="flagsize" src={flag} alt={`${name}`}></img>          
+                              <tr  Padding="10px 10px 10px 10px">
+                                <img width="450" height="270" className="flagsize" src={flag} alt={`${name}`}></img>          
                               </tr>        
                             </table>
                           </td>
@@ -151,13 +151,14 @@ export default function Home({data}) {
           text-align: center;
           text-decoration: none;
 
-          font-size: 16px;
+          font-size: 14px;
         }
 
         .button2 {
           background-color: white; 
           color: blue; 
           border: 5px solid ;
+          width: 200px
         }
 
         .container {
@@ -259,13 +260,17 @@ export default function Home({data}) {
           align-items: center;
           justify-content: center;
           flex-wrap: wrap;
+          grid-row-gap: 30px;
 
-          max-width: 800px;
-          margin-top: 3rem;
-
+          max-width: 1100px;
+          margin-top: 1rem;
+          grid-gap = 20px;
           list-style:none;
           margin-left: 0;
-          padding-left: 0;
+          margin-top: 15px;
+          /* padding-left: 0;
+          padding-top: 10; */
+          Padding: 10px,10px,10px,10px;
         }
 
         .flagsize {
@@ -273,13 +278,10 @@ export default function Home({data}) {
           align-items: center;
           justify-content: center;
           flex-wrap: wrap;
-
-          max-width: 200px;
+          Padding: 10px,10px,10px,10px;
+          max-width: 1200px;
           margin-top: 3rem;
-
-          list-style:none;
-          margin-left: 0;
-          padding-left: 0;
+          border: 1px solid #555;
         }
 
         .card {
