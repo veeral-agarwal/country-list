@@ -52,13 +52,17 @@ export default function Home({data}) {
       </Head>
 
       <main>
-        <h1 className="title">
+        <h1 className="title" float="left" text-align="left">
         Countries
         </h1>
 
 
         <form className="search" >
-          <input className="search" onChange={handleChange} type="text"/>
+          <input className="search" onChange={handleChange} type="text" placeholder="Search countries"/>
+          <div class="input-group-append">
+            <span class="input-group-text amber lighten-3" id="basic-text1"><i class="fas fa-search text-grey"
+                                                                             aria-hidden="true"></i></span>
+          </div>
           {/* <input onChange={handleChange}​​​ type="text"/> */}
           {/* <button>search</button> */}
         </form>
@@ -74,7 +78,7 @@ export default function Home({data}) {
                 <div>
                   <div>
                     <div>
-                      <table cellspacing="20">
+                      <table cellspacing="10">
                         <tr>
                           <td>
                             <table>
@@ -86,13 +90,13 @@ export default function Home({data}) {
                           <td>
                             <table>
                               <tr>
-                                <h3>{name}</h3>          
+                                <h1>{name}</h1>          
                               </tr>
                               <tr>
-                                <p>currency: {currencies[0]["name"]}</p>          
+                                <p >Currency: {currencies[0]["name"]}</p>          
                               </tr>
                               <tr>
-                                <p>current date and time: {Time(timezones[0].slice(3).replace(":", "."))}</p>          
+                                <p>Current date and time: {Time(timezones[0].slice(3).replace(":", "."))}</p>          
                               </tr>
                               <tr>
                                 <td >
@@ -142,6 +146,10 @@ export default function Home({data}) {
 
       <style jsx>{`
 
+        h1{
+          text-align: left;
+        }
+
         .buttons {
           margin: 4px 2px;
           background-color: white; Green
@@ -158,8 +166,10 @@ export default function Home({data}) {
           background-color: white; 
           color: blue; 
           border: 5px solid ;
-          width: 200px
+          width: 250px
         }
+
+
 
         .container {
           min-height: 100vh;
@@ -167,7 +177,7 @@ export default function Home({data}) {
           display: flex;
           flex-direction: column;
           justify-content: center;
-          align-items: center;
+          /* align-items: center; */
         }
 
         main {
@@ -227,11 +237,12 @@ export default function Home({data}) {
           margin: 0;
           line-height: 1.15;
           font-size: 4rem;
+          text-align: left
         }
 
         .title,
         .description {
-          text-align: center;
+          text-align: left;
         }
 
         .description {
@@ -249,10 +260,19 @@ export default function Home({data}) {
         }
 
         .search {
-          width: "100%";
+          /* width: "100%";
           padding: "2%";
           border: "2px solid lightgray";
-          fontSize: "calc(70% + 0.6vw + 0.6vh)";
+          fontSize: "calc(70% + 0.6vw + 0.6vh)"; */
+          float: right;
+          padding: 6px;
+          /* border: 5px solid #eaeaea; */
+          margin-top: 8px;
+          /* margin-right: 10px; */
+          margin-left: 30px;
+          font-size: 17px;
+          width: 1030px
+
         }
 
         .grid {
@@ -280,7 +300,7 @@ export default function Home({data}) {
           flex-wrap: wrap;
           Padding: 10px,10px,10px,10px;
           max-width: 1200px;
-          margin-top: 3rem;
+          /* margin-top: 3rem; */
           border: 1px solid #555;
         }
 
