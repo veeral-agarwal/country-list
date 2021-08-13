@@ -1,48 +1,58 @@
 // https://restcountries.eu/rest/v2/all
 
-import Head from 'next/head'
-import Link from 'next/link'
-import {useState} from 'react'
-import { Button } from 'react-bootstrap';
+import Head from "next/head";
+import Link from "next/link";
+import { useState } from "react";
+import { Button } from "react-bootstrap";
+import { MDBCol, MDBIcon } from "mdbreact";
+import React from "react";
+import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
+import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import FormControl from "@material-ui/core/FormControl";
+import TextField from "@material-ui/core/TextField";
+import Grid from "@material-ui/core/Grid";
+import SearchIcon from "@material-ui/icons/Search";
 
 
-const defaultEndpoint = 'https://restcountries.eu/rest/v2/all'
+
+const defaultEndpoint = "https://restcountries.eu/rest/v2/all";
 
 export async function getServerSideProps() {
   const res = await fetch(defaultEndpoint);
   const data = await res.json();
   return {
     props: {
-      data
-    }
-  }
+      data,
+    },
+  };
 }
 
 function Time(x) {
   let d = new Date();
-  let utc = d.getTime() + (d.getTimezoneOffset() * 60000);
-  let nd = new Date(utc + (3600000 * x));
+  let utc = d.getTime() + d.getTimezoneOffset() * 60000;
+  let nd = new Date(utc + 3600000 * x);
   return nd.toLocaleString();
 }
 
-export default function Home({data}) {
-  
+export default function Home({ data }) {
   var results = data;
   const defaultresults = data;
-  
 
-  const [new_data, setnew_data] = useState(results)
+  const [new_data, setnew_data] = useState(results);
   function handleChange(e) {
-    if(e.target.value === "") {
-      setnew_data(results)
+    if (e.target.value === "") {
+      setnew_data(results);
+    } else {
+      const a = results.filter((item) =>
+        item.name.toLowerCase().includes(e.target.value.toLowerCase())
+      );
+      setnew_data(a);
     }
-    else {
-      const a = results.filter(item => item.name.toLowerCase().includes(e.target.value.toLowerCase()))
-      setnew_data(a)
-    }
-    console.log(new_data)
-    console.log(e.target.value)
-  };
+    console.log(new_data);
+    console.log(e.target.value);
+  }
 
   return (
     <div className="container">
@@ -53,15 +63,37 @@ export default function Home({data}) {
 
       <main>
         <h1 className="title" float="left" text-align="left">
-        Countries
+          Countries
         </h1>
 
+        <div>
+          
+          <TextField
+            
+            id="input-with-icon-textfield"
+            label="TextField"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+          
+        </div>
 
-        <form className="search" >
-          <input className="search" onChange={handleChange} type="text" placeholder="Search countries"/>
+        <form className="search">
+          <input
+            className="search"
+            onChange={handleChange}
+            type="text"
+            placeholder="Search countries"
+          />
           <div class="input-group-append">
-            <span class="input-group-text amber lighten-3" id="basic-text1"><i class="fas fa-search text-grey"
-                                                                             aria-hidden="true"></i></span>
+            <span class="input-group-text amber lighten-3" id="basic-text1">
+              <i class="fas fa-search text-grey" aria-hidden="true"></i>
+            </span>
           </div>
           {/* <input onChange={handleChange}​​​ type="text"/> */}
           {/* <button>search</button> */}
@@ -69,11 +101,11 @@ export default function Home({data}) {
 
         {console.log(new_data)}
         <ul className="grid">
-          {new_data.map(result => {
-            const { alpha3code, name, flag, currencies, timezones} = result;
-            
+          {new_data.map((result) => {
+            const { alpha3code, name, flag, currencies, timezones } = result;
+
             return (
-              <li  key={alpha3code} style={{border: "2px solid lightgray"}} >
+              <li key={alpha3code} style={{ border: "2px solid lightgray" }}>
                 {/* <Link href="./country/${alpha3code}" > */}
                 <div>
                   <div>
@@ -82,32 +114,44 @@ export default function Home({data}) {
                         <tr>
                           <td>
                             <table>
-                              <tr  Padding="10px 10px 10px 10px">
-                                <img width="450" height="270" className="flagsize" src={flag} alt={`${name}`}></img>          
-                              </tr>        
+                              <tr Padding="10px 10px 10px 10px">
+                                <img
+                                  width="450"
+                                  height="270"
+                                  className="flagsize"
+                                  src={flag}
+                                  alt={`${name}`}
+                                ></img>
+                              </tr>
                             </table>
                           </td>
                           <td>
                             <table>
                               <tr>
-                                <h1>{name}</h1>          
+                                <h1>{name}</h1>
                               </tr>
                               <tr>
-                                <p >Currency: {currencies[0]["name"]}</p>          
+                                <p>Currency: {currencies[0]["name"]}</p>
                               </tr>
                               <tr>
-                                <p>Current date and time: {Time(timezones[0].slice(3).replace(":", "."))}</p>          
+                                <p>
+                                  Current date and time:{" "}
+                                  {Time(
+                                    timezones[0].slice(3).replace(":", ".")
+                                  )}
+                                </p>
                               </tr>
                               <tr>
-                                <td >
-                                  <Link href={`https://www.google.com/maps/place/${result.name}`}>
+                                <td>
+                                  <Link
+                                    href={`https://www.google.com/maps/place/${result.name}`}
+                                  >
                                     <a target="_blank">
                                       <button className="buttons button2">
                                         <h2>Show Map</h2>
                                       </button>
-                                      
                                     </a>
-                                  </Link>  
+                                  </Link>
                                 </td>
                                 <td>
                                   <Link href={`/country/${result.alpha3Code}`}>
@@ -117,8 +161,8 @@ export default function Home({data}) {
                                       </button>
                                     </a>
                                   </Link>
-                                </td>  
-                              </tr>        
+                                </td>
+                              </tr>
                             </table>
                           </td>
                         </tr>
@@ -126,9 +170,8 @@ export default function Home({data}) {
                     </div>
                   </div>
                 </div>
-            </li>
-            )
-
+              </li>
+            );
           })}
         </ul>
       </main>
@@ -139,8 +182,7 @@ export default function Home({data}) {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel" className="logo" />
+          Powered by <img src="/vercel.svg" alt="Vercel" className="logo" />
         </a>
       </footer>
 
@@ -374,5 +416,5 @@ export default function Home({data}) {
         }
       `}</style>
     </div>
-  )
+  );
 }
